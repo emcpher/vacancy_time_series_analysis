@@ -1,2 +1,4 @@
 .venv
 .vscode
+vac_ts_analysis.egg-info/
+vac_ts_analysis/__pycache__

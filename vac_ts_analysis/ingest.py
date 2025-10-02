@@ -4,30 +4,35 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from io import StringIO
 import pandas as pd
+from typing import Dict
 
-DATA_SOURCE_URL = "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/ap2y/lms/previous"
+def download_all_data(url: str, number_of_files: int = 20) -> Dict[str, pd.DataFrame]:
+    """_summary_
 
-def main() -> None:
-    
-    response = requests.get(DATA_SOURCE_URL)
+    Args:
+        url (str): The main URL for the website.
+        number_of_files (int, optional): The number of files we want to consider. Defaults to 20.
+
+    Returns:
+        Dict[str, pd.DataFrame]: A dictionary of the scraped files. Keys are the dates scraped from the website. 
+        No real pre-processing done at this stage. 
+    """
+    response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # all links will be under <a> tags
     print("Scraping target url.")
     csv_download_tags = soup.find_all('a', {"data-gtm-type": "download-version-csv"})
-    for tag in csv_download_tags:
+    raw_data = dict()
+    for tag in csv_download_tags[:number_of_files]:
         link = tag.get('href')
-        full_url = urljoin(DATA_SOURCE_URL, link)
+        full_url = urljoin(url, link)
         download_response = requests.get(full_url)
-        data = dict()
         if download_response.status_code == 200:
             # Convert CSV text to a pandas DataFrame
             csv_data = StringIO(download_response.text)
             df = pd.read_csv(csv_data, on_bad_lines='skip')
             date = tag.get('data-gtm-date')
-            data[date] = df
-
-    return
-
-if __name__ == "__main__":
-    main()
+            raw_data[date] = df
+    
+    return raw_data 

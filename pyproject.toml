@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vac_ts_analysis"
+version = "0.1.0"
+description = "A project to analyse and visualise ONS vacancy data, and to make projections of future vacancies."
+
+readme = "README.md"
+requires-python = ">=3.13"
+
+dependencies = [
+    "requests==2.32.5",
+    "beautifulsoup4==4.14.2",
+    "numpy>=2.3.3",
+    "pandas==2.3.3",
+]
