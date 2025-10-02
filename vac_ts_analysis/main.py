@@ -41,7 +41,7 @@ def main() -> None:
     visualisation.plot_projection(combined_frame, projection)
 
     # 6. Output bits
-    combined_frame.to_csv(os.path.join("output", "cobined_actuals.csv"), index=False)
+    combined_frame.to_csv(os.path.join("output", "combined_actuals.csv"), index=False)
     projection.to_csv(os.path.join("output", "projection.csv"))
 
     return
