@@ -39,6 +39,9 @@ def preprocess_and_combine(raw_data: Dict[str, pd.DataFrame]) -> pd.DataFrame:
         # Convert the month to a datetime object
         df["month"] = pd.to_datetime(df["month"], format="%Y %b")
 
+        # Ensure that the vacancies object is numeric
+        df["vacancies"] = df["vacancies"].astype(float)
+
         # Create a column for the vintage
         df["vintage"] = release_date
 

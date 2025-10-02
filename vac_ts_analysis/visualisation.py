@@ -46,3 +46,36 @@ def plot_revisions_single_month(combined_frame: pd.DataFrame, month: str) -> Non
     fig.savefig(os.path.join(PLOT_DIR, f"revisions_singlemonth_{month}.png"))
 
     return
+
+def plot_projection(combined_frame: pd.DataFrame, projection: pd.Series) -> None:
+    combined_frame = combined_frame.copy()
+    projection = projection.copy()
+
+    most_recent_vintage = combined_frame["vintage"].max()
+    timeseries = combined_frame.loc[combined_frame["vintage"]== most_recent_vintage,["month", "vacancies"]].set_index("month").squeeze()
+
+    # Create a Figure and Axes object
+    fig, ax = plt.subplots()
+
+    # Plot the actuals
+    ax.plot(timeseries, marker="o", linestyle="-", color="b", label=f"actuals from {most_recent_vintage}")
+
+    # Plot the projection
+    ax.plot(projection, marker="o", linestyle="-", color="r", label=f"projection")
+
+    # Add labels and title
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Vacancies (thousands)")
+    ax.set_title("Vacancies")
+    
+    # Sort gridlines
+    ax.yaxis.grid(True, linestyle="--", alpha=0.5)  # horizontal
+    ax.xaxis.grid(False)  
+
+    # Add legend
+    ax.legend()
+
+    # Save the figure as a PNG
+    fig.savefig(os.path.join(PLOT_DIR, f"projection.png"))
+
+    return
