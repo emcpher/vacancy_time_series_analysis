@@ -31,7 +31,7 @@ def download_all_data(url: str, number_of_files: int = 20) -> Dict[str, pd.DataF
         if download_response.status_code == 200:
             # Convert CSV text to a pandas DataFrame
             csv_data = StringIO(download_response.text)
-            df = pd.read_csv(csv_data, on_bad_lines='skip')
+            df = pd.read_csv(csv_data)
             date = tag.get('data-gtm-date')
             raw_data[date] = df
     
