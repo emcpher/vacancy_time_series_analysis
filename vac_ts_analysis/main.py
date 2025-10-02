@@ -1,4 +1,5 @@
 
+import os
 import pandas as pd
 
 from vac_ts_analysis import ingest, preprocessing, visualisation, forecasting
@@ -27,15 +28,21 @@ def main() -> None:
     combined_frame = preprocessing.preprocess_and_combine(raw_data)
 
     # 3. Visualisation
-    #visualisation.visualise_data(combined_frame)
     for month in MONTHS_TO_PLOT:
         visualisation.plot_revisions_single_month(combined_frame, month=month)
+    
+    # Commenting this out because I couldn't quite get it working in time. It runs, but the visualisation isn't great.
+    #visualisation.plot_all_revisions(combined_frame) 
 
     # 4. Projection
     projection = forecasting.create_projection(combined_frame)
 
     # 5. Plot projection against most recent vintage series
     visualisation.plot_projection(combined_frame, projection)
+
+    # 6. Output bits
+    combined_frame.to_csv(os.path.join("output", "cobined_actuals.csv"), index=False)
+    projection.to_csv(os.path.join("output", "projection.csv"))
 
     return
 

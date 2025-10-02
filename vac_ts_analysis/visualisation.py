@@ -47,7 +47,53 @@ def plot_revisions_single_month(combined_frame: pd.DataFrame, month: str) -> Non
 
     return
 
+def plot_all_revisions(combined_frame: pd.DataFrame) -> None:
+    """Plot all revisions overlaid. The entire being to shift all the series so that they all share one x-axis value for a "finished" value.
+    You could then see their paths to the "finised" value overlaid. It would look a bit like a fan chart. 
+
+    Args:
+        combined_frame (pd.DataFrame): A frame with columns (vintage, month, vacancies).
+    """
+    combined_frame = combined_frame.copy()
+
+    combined_frame["vintage_months_after_observation"] = combined_frame["vintage"] - combined_frame["month"]
+
+    # Create a Figure and Axes object
+    fig, ax = plt.subplots()
+
+    months = combined_frame["month"].unique()
+    for month in months[:20]:
+
+        # Get the month's data
+        month_data = combined_frame.loc[combined_frame["month"]==month, ["vintage_months_after_observation", "vacancies"]].set_index("vintage_months_after_observation").squeeze()
+
+        # Plot the actuals
+        ax.plot(month_data, marker="o", linestyle="-", color="b", label=f"revisions for: {month}")
+
+
+    # Add labels and title
+    ax.set_xlabel("Publication delay")
+    ax.set_ylabel("Vacancies (thousands)")
+    ax.set_title("Vacancies")
+    
+    # Sort gridlines
+    ax.yaxis.grid(True, linestyle="--", alpha=0.5)  # horizontal
+    ax.xaxis.grid(False)  
+
+    # Save the figure as a PNG
+    fig.savefig(os.path.join(PLOT_DIR, f"revisions_allmonths.png"))
+
+    # TODO - get all the series on a similar scale so that you can compare them! Doesn't quite work as-is.
+
+    return 
+
 def plot_projection(combined_frame: pd.DataFrame, projection: pd.Series) -> None:
+    """Plot the actuals and the projection against each other. Save in /plots/ 
+
+    Args:
+        combined_frame (pd.DataFrame): A dataframe of the various historic actuals.
+        projection (pd.Series): The projection
+    """
     combined_frame = combined_frame.copy()
     projection = projection.copy()
 
